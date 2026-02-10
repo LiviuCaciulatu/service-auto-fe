@@ -1,0 +1,18 @@
+.newclient-container{padding:20px}
+.newclient-form{max-width:720px;display:flex;flex-direction:column;gap:12px}
+.form-row{display:flex;gap:12px;align-items:center}
+.form-label{width:140px;color:#333;font-weight:600}
+.form-input{flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:6px}
+.form-actions{display:flex;gap:8px;margin-top:6px}
+.form-error{color:#b00020}
+.upload-area{border:2px dashed #ccc;padding:18px;border-radius:8px;text-align:center;cursor:pointer;background:#fafafa;margin:12px 0}
+.upload-area:hover{border-color:#999}
+.upload-text{color:#666}
+.status-banner{margin-top:8px;padding:8px;border-radius:6px;background:#fff;border:1px solid #eee;color:#333}
+.upload-status{margin-top:8px}
+.upload-filename{color:#333;margin-bottom:6px}
+.upload-info{color:#555}
+.upload-success{color:green;margin-top:6px}
+.upload-error{color:#b00020;margin-top:6px}
+.client-result{margin-top:10px;padding:10px;background:#fff;border:1px solid #eee;border-radius:6px}
+.client-result pre{white-space:pre-wrap;word-break:break-word;margin:0}

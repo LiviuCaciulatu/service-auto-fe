@@ -1,0 +1,17 @@
+.cp-heading{margin-top:0;font-size:1.5rem}
+.cp-details-heading{margin-bottom:8px}
+.field-row{display:flex;gap:12px;padding:8px 0;align-items:flex-start}
+.field-key{color:#666;min-width:140px;font-weight:600}
+.field-value{white-space:pre-wrap;word-break:break-word}
+.value-column{display:flex;flex-direction:column;gap:6px}
+.value-indent{padding-left:8px}
+.object-row{display:flex;gap:8px}
+.object-key{color:#666;min-width:120px}
+.small-gap{gap:4px}
+.cp-section{margin-top:16px}
+.cp-section-heading{margin-top:0}
+.section-content{margin-top:8px}
+.doc-item{margin-bottom:12px;padding:12px;border:1px solid #e6e6e6;border-radius:8px;background:#fbfbfb;box-shadow:0 1px 2px rgba(0,0,0,0.02)}
+.doc-item + .doc-item{margin-top:8px}
+.client-id{color:#888;font-size:0.9rem;margin-bottom:6px}
+.back-btn{margin-bottom:12px}
