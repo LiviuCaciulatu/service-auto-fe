@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import './Home.css'
+import '../Home/Home.css'
 import './ClientProfile.css'
 
 type Client = {
@@ -100,9 +100,16 @@ function ClientCard({ client }: { client: Client }) {
 }
 
 function LicenseCard({ license }: { license: any }) {
-  if (!license) return (
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const goNew = () => { if (id) navigate(`/client/${id}/driver-license/new`) }
+
+  if (!license || (Array.isArray(license) && license.length === 0)) return (
     <div className="home-card cp-section">
       <h4 className="cp-section-heading">Driver License</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>New driver license</button>
+      </div>
       <div className="section-content">No driver license found.</div>
     </div>
   )
@@ -112,6 +119,9 @@ function LicenseCard({ license }: { license: any }) {
   return (
     <div className="home-card cp-section">
       <h4 className="cp-section-heading">Driver License</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>New driver license</button>
+      </div>
       {items.map((lic: any, idx: number) => (
         <div key={idx} className="doc-item">
           <div className="section-content">{lic && Object.entries(lic).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
@@ -122,9 +132,26 @@ function LicenseCard({ license }: { license: any }) {
 }
 
 function CarDocsCard({ docs }: { docs: any[] }) {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const goNew = () => { if (id) navigate(`/client/${id}/car-documents/new`) }
+
+  if (!docs || docs.length === 0) return (
+    <div className="home-card cp-section">
+      <h4 className="cp-section-heading">Car Documents</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>New car documents</button>
+      </div>
+      <div className="section-content">No car documents found.</div>
+    </div>
+  )
+
   return (
     <div className="home-card cp-section">
       <h4 className="cp-section-heading">Car Documents</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>New car documents</button>
+      </div>
       {docs.map((doc, i) => (
         <div key={i} className="doc-item">
           <div className="section-content">{Object.entries(doc).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
@@ -135,9 +162,26 @@ function CarDocsCard({ docs }: { docs: any[] }) {
 }
 
 function ClaimsCard({ claims }: { claims: any[] }) {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const goNew = () => { if (id) navigate(`/client/${id}/compensation-claim/new`) }
+
+  if (!claims || claims.length === 0) return (
+    <div className="home-card cp-section">
+      <h4 className="cp-section-heading">Compensation Claims</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>Create compensation claim</button>
+      </div>
+      <div className="section-content">No compensation claims found.</div>
+    </div>
+  )
+
   return (
     <div className="home-card cp-section">
       <h4 className="cp-section-heading">Compensation Claims</h4>
+      <div className="section-actions">
+        <button className="btn" type="button" onClick={goNew}>Create compensation claim</button>
+      </div>
       {claims.map((c, i) => (
         <div key={i} className="doc-item">
           <div className="section-content">{Object.entries(c).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
@@ -235,11 +279,11 @@ export default function ClientProfile() {
 
       {carLoading && <div>Loading car documents...</div>}
       {carError && <div className="modal-error">{carError}</div>}
-      {carDocuments && carDocuments.length > 0 && <CarDocsCard docs={carDocuments} />}
+      {carDocuments && <CarDocsCard docs={carDocuments} />}
 
       {claimsLoading && <div>Loading compensation claims...</div>}
       {claimsError && <div className="modal-error">{claimsError}</div>}
-      {claims && claims.length > 0 && <ClaimsCard claims={claims} />}
+      {claims && <ClaimsCard claims={claims} />}
     </main>
   )
 }
