@@ -1,0 +1,10 @@
+/* Highlight empty form controls so users can spot fields that need filling */
+input[value=""], textarea[value=""], select[value=""] {
+	background-color: #fff7a8; /* pale yellow */
+}
+
+/* Keep highlighting only when the control is not focused (optional) */
+input[value=""]:focus, textarea[value=""]:focus, select[value=""]:focus {
+	background-color: #ffffff;
+}
+

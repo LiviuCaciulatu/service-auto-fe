@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import '../Home/Home.css'
 import './ClientProfile.css'
+import ClaimTemplate from '../../templates/claim/v1/template'
+import { mapClaim } from '../../templates/claim/v1/mapping'
+import ReactDOMServer from 'react-dom/server'
 
 type Client = {
   id: number | string
@@ -176,6 +179,50 @@ function ClaimsCard({ claims }: { claims: any[] }) {
     </div>
   )
 
+  async function downloadClaimPdf(claim: any) {
+    try {
+      const id = claim?.id ?? claim?._id ?? claim?.claim_id
+      if (!id) throw new Error('Claim has no id')
+      const res = await fetch(`/compensationClaims/${id}/pdf`)
+      if (res.ok) {
+        const blob = await res.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        const base = claim.claim_number ?? claim.claim_file_number ?? 'claim'
+        a.download = `claim-${base}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        URL.revokeObjectURL(url)
+        return
+      }
+
+      // fallback: client-side HTML->PDF generation using html2canvas + jsPDF
+      try {
+        const base = claim.claim_number ?? claim.claim_file_number ?? 'claim'
+        const { htmlToPdf } = await import('../../utils/htmlToPdf')
+        // render a temporary DOM node with the template HTML
+        const container = document.createElement('div')
+        container.style.position = 'fixed'
+        container.style.left = '-9999px'
+        container.style.top = '0'
+        // give it an id to target
+        container.id = `tmp-claim-${Date.now()}`
+        // pass raw claim so template keys match the field names used by ClaimTemplate
+        container.innerHTML = ReactDOMServer.renderToStaticMarkup(<ClaimTemplate data={claim} />)
+        document.body.appendChild(container)
+        await htmlToPdf(`#${container.id}`, `claim-${base}.pdf`)
+        container.remove()
+      } catch (e: any) {
+        throw new Error('Client PDF generation failed: ' + (e?.message ?? String(e)))
+      }
+    } catch (err: any) {
+      console.error('Download claim PDF failed', err)
+      alert('Failed to download PDF: ' + (err?.message || err))
+    }
+  }
+
   return (
     <div className="home-card cp-section">
       <h4 className="cp-section-heading">Compensation Claims</h4>
@@ -185,6 +232,9 @@ function ClaimsCard({ claims }: { claims: any[] }) {
       {claims.map((c, i) => (
         <div key={i} className="doc-item">
           <div className="section-content">{Object.entries(c).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
+          <div className="section-actions">
+            <button className="btn" type="button" onClick={() => downloadClaimPdf(c)}>Download PDF</button>
+          </div>
         </div>
       ))}
     </div>

@@ -1,0 +1,90 @@
+/* Layout wrapper constrained to 1440px */
+.comp-claim-wrapper {
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+  max-width: 1440px;
+  width: 100%;
+}
+
+.comp-claim-heading {
+  margin-bottom: 8px;
+}
+
+.editable-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* ensure there's visible space between a label and its input/textarea/select */
+.editable-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.editable-grid .input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* make inputs visually wider (approx +50%) */
+.editable-grid .input {
+  width: 60%;
+  max-width: none;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.payment-title {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.send-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.send-result {
+  margin-top: 8px;
+}
+
+.send-result-inner {
+  margin-top: 8px;
+}
+
+.send-result-title {
+  font-weight: 600;
+}
+
+.send-result-pre {
+  white-space: pre-wrap;
+  background: #fff;
+  padding: 8px;
+}
+
+.preview-container {
+  margin-top: 0;
+  border: 1px solid #ddd;
+  padding: 12px;
+  background: #fff;
+  box-sizing: border-box;
+  width: 217mm;
+  overflow: auto;
+}
+
+/* helper full-width button row */
+.button-row-full {
+  grid-column: 1 / -1;
+}

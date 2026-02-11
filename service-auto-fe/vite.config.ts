@@ -22,7 +22,17 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/carDocuments': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
       '/files': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/compensationClaims': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
