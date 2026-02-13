@@ -16,7 +16,7 @@ need(){ command -v "$1" >/dev/null 2>&1 || die "Missing dependency: $1"; }
 set -a; # shellcheck disable=SC1091
 source "${ENV_FILE}"; set +a
 
-need aws; need pnpm
+need aws; need npm
 
 AWS_REGION="${AWS_REGION:-eu-central-1}"
 MODE="${MODE:-production}"
@@ -36,8 +36,8 @@ log "Gate: running validate"
 # IMPORTANT: run via bash so it works even if validate is not chmod +x
 /usr/bin/env bash "${ROOT_DIR}/auto-deploy-validate.sh"
 
-log "Build: pnpm run build:${MODE}"
-pnpm -s run "build:${MODE}"
+log "Build: npm run build:${MODE}"
+npm -s run "build:${MODE}"
 [[ -d "${ROOT_DIR}/${DIST_DIR}" ]] || die "Build output not found: ${DIST_DIR}/"
 ok "Build: complete (${DIST_DIR}/)"
 
@@ -62,9 +62,9 @@ aws s3 cp "${DIST_DIR}/index.html" "s3://${S3_BUCKET_NAME}/index.html" \
   "${aws_region_arg[@]}" >/dev/null
 ok "Deploy: index.html updated"
 
-log "CloudFront: invalidate /index.html and /"
+log "CloudFront: invalidate /index.html"
 aws cloudfront create-invalidation --distribution-id "${CF_DISTRIBUTION_ID}" \
-  --paths "/index.html" "/" >/dev/null
+  --paths "/*" >/dev/null
 ok "CloudFront: invalidation created"
 
 domain="$(aws cloudfront get-distribution --id "${CF_DISTRIBUTION_ID}" --query "Distribution.DomainName" --output text)"

@@ -17,7 +17,7 @@ need(){ command -v "$1" >/dev/null 2>&1 || die "Missing dependency: $1"; }
 set -a; # shellcheck disable=SC1091
 source "${ENV_FILE}"; set +a
 
-need aws; need node; need pnpm
+need aws; need node; need npm
 
 AWS_REGION="${AWS_REGION:-eu-central-1}"
 APPLICATION_TAG="${APPLICATION_TAG:-elearning}"
