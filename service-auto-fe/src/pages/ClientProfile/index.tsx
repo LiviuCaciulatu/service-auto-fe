@@ -88,15 +88,78 @@ function FieldRow({ k, v }: { k: string; v: any }) {
   )
 }
 
-function ClientCard({ client }: { client: Client }) {
+function ClientCard({ client, onUpdate }: { client: Client; onUpdate?: (c: Client) => void }) {
+  const [editing, setEditing] = React.useState(false)
+  const [form, setForm] = React.useState<any>(client)
+  const [saving, setSaving] = React.useState(false)
+  const [saveError, setSaveError] = React.useState<string | null>(null)
+
+  React.useEffect(() => { setForm(client); setEditing(false) }, [client])
+
+  function renderFieldEditor(k: string, v: any) {
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+      return <input className="form-input" value={form[k] ?? ''} onChange={e => setForm((s:any)=>({...s, [k]: e.target.value}))} />
+    }
+    if (Array.isArray(v)) {
+      return <input className="form-input" value={(form[k] || []).join(', ')} onChange={e => setForm((s:any)=>({...s, [k]: e.target.value.split(',').map((p:string)=>p.trim()).filter(Boolean)}))} />
+    }
+    return <textarea className="form-input" value={JSON.stringify(form[k])} onChange={e => {
+      try { setForm((s:any)=>({...s, [k]: JSON.parse(e.target.value)})) } catch { setForm((s:any)=>({...s, [k]: e.target.value})) }
+    }} />
+  }
+
   return (
     <div className="home-card">
       <h2 className="cp-heading">{getDisplayName(client)}</h2>
       <h4 className="cp-details-heading">Details</h4>
+
       <div>
-        {Object.entries(client).map(([k, v]) => (
-          <FieldRow key={k} k={k} v={v} />
-        ))}
+        {editing ? (
+          <form onSubmit={e => e.preventDefault()}>
+            {Object.entries(form).map(([k, v]) => (
+              <div className="form-row" key={k}>
+                <label className="form-label">{k}</label>
+                {renderFieldEditor(k, v)}
+              </div>
+            ))}
+            {saveError && <div className="form-error">Error: {saveError}</div>}
+            <div className="form-actions">
+              <button className="btn" type="button" disabled={saving} onClick={async () => {
+                setSaveError(null)
+                setSaving(true)
+                try {
+                  const idVal = form.id ?? client.id
+                  const res = await fetch(`/clients/${idVal}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(form),
+                  })
+                  if (!res.ok) {
+                    const txt = await res.text().catch(() => '')
+                    throw new Error(`${res.status} ${res.statusText} ${txt}`)
+                  }
+                  const updated = await res.json().catch(() => null)
+                  onUpdate?.(updated ?? form)
+                  setEditing(false)
+                } catch (err: any) {
+                  setSaveError(err?.message ?? String(err))
+                } finally {
+                  setSaving(false)
+                }
+              }}>Save</button>
+              <button className="btn" type="button" onClick={() => { setForm(client); setEditing(false); }}>Cancel</button>
+            </div>
+          </form>
+        ) : (
+          <div>
+            {Object.entries(client).map(([k, v]) => (
+              <FieldRow key={k} k={k} v={v} />
+            ))}
+            <div className="section-actions" style={{ marginTop: 8 }}>
+              <button className="btn" type="button" onClick={() => setEditing(true)}>Edit</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -105,7 +168,7 @@ function ClientCard({ client }: { client: Client }) {
 function LicenseCard({ license }: { license: any }) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const goNew = () => { if (id) navigate(`/client/${id}/driver-license/new`) }
+  const goNew = () => { if (id) navigate(`/clients/${id}/driver-license/new`) }
 
   if (!license || (Array.isArray(license) && license.length === 0)) return (
     <div className="home-card cp-section">
@@ -128,6 +191,12 @@ function LicenseCard({ license }: { license: any }) {
       {items.map((lic: any, idx: number) => (
         <div key={idx} className="doc-item">
           <div className="section-content">{lic && Object.entries(lic).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
+          <div className="section-actions">
+            <button className="btn" type="button" onClick={() => {
+              const lid = lic?.id ?? lic?._id ?? idx
+              if (id) navigate(`/clients/${id}/driver-license/${lid}`)
+            }}>Edit</button>
+          </div>
         </div>
       ))}
     </div>
@@ -137,7 +206,7 @@ function LicenseCard({ license }: { license: any }) {
 function CarDocsCard({ docs }: { docs: any[] }) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const goNew = () => { if (id) navigate(`/client/${id}/car-documents/new`) }
+  const goNew = () => { if (id) navigate(`/clients/${id}/car-documents/new`) }
 
   if (!docs || docs.length === 0) return (
     <div className="home-card cp-section">
@@ -158,6 +227,12 @@ function CarDocsCard({ docs }: { docs: any[] }) {
       {docs.map((doc, i) => (
         <div key={i} className="doc-item">
           <div className="section-content">{Object.entries(doc).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
+          <div className="section-actions">
+            <button className="btn" type="button" onClick={() => {
+              const did = doc?.id ?? doc?._id ?? i
+              if (id) navigate(`/clients/${id}/car-documents/${did}`)
+            }}>Edit</button>
+          </div>
         </div>
       ))}
     </div>
@@ -167,7 +242,7 @@ function CarDocsCard({ docs }: { docs: any[] }) {
 function ClaimsCard({ claims }: { claims: any[] }) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const goNew = () => { if (id) navigate(`/client/${id}/compensation-claim/new`) }
+  const goNew = () => { if (id) navigate(`/clients/${id}/compensation-claim/new`) }
 
   if (!claims || claims.length === 0) return (
     <div className="home-card cp-section">
@@ -181,20 +256,12 @@ function ClaimsCard({ claims }: { claims: any[] }) {
 
   async function downloadClaimPdf(claim: any) {
     try {
-      const id = claim?.id ?? claim?._id ?? claim?.claim_id
-      if (!id) throw new Error('Claim has no id')
-      const res = await fetch(`/compensationClaims/${id}/pdf`)
+      const claimId = claim?.id ?? claim?._id ?? claim?.claim_id
+      if (!claimId) throw new Error('Claim has no id')
+      // Prefer fetching the JSON claim resource (no PDF)
+      const res = await fetch(`/compensationClaims/${claimId}`)
       if (res.ok) {
-        const blob = await res.blob()
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        const base = claim.claim_number ?? claim.claim_file_number ?? 'claim'
-        a.download = `claim-${base}.pdf`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(url)
+        if (id) navigate(`/clients/${id}/compensation-claims/${claimId}`)
         return
       }
 
@@ -234,6 +301,10 @@ function ClaimsCard({ claims }: { claims: any[] }) {
           <div className="section-content">{Object.entries(c).map(([k, v]) => <FieldRow key={k} k={k} v={v} />)}</div>
           <div className="section-actions">
             <button className="btn" type="button" onClick={() => downloadClaimPdf(c)}>Download PDF</button>
+            <button className="btn" type="button" onClick={() => {
+              const cid = c?.id ?? c?._id ?? c?.claim_id ?? i
+              if (id) navigate(`/clients/${id}/compensation-claims/${cid}`)
+            }}>Edit</button>
           </div>
         </div>
       ))}
@@ -321,7 +392,7 @@ export default function ClientProfile() {
       {loading && <div>Loading client...</div>}
       {error && <div className="modal-error">Error: {error}</div>}
 
-      {client && <ClientCard client={client} />}
+      {client && <ClientCard client={client} onUpdate={(c) => setClient(c)} />}
 
       {licenseLoading && <div>Loading driver license...</div>}
       {licenseError && <div className="modal-error">{licenseError}</div>}

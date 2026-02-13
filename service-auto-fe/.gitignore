@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Env files (keep .env.example tracked separately)
+.env
+.env.*
+!.env.sample
+!.env.example
+!.env.development.example
+!.env.production.example
+!.env.deployment.example
