@@ -3,15 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+"scripts": {
     "dev:development": "vite --mode development --host",
     "dev:production": "vite --mode production --host",
-    "build:development": "tsc -b && vite build --mode development",
-    "build:production": "tsc -b && vite build --mode production",
+    "build:development": "vite build --mode development",
+    "build:production": "vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@types/html2canvas": "^0.5.35",
+    "@types/jspdf": "^1.3.3",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^6.30.3",
