@@ -6,8 +6,8 @@
 "scripts": {
     "dev:development": "vite --mode development --host",
     "dev:production": "vite --mode production --host",
-    "build:development": "vite build --mode development",
-    "build:production": "vite build --mode production",
+    "build:development": "tsc -b && vite build --mode development",
+    "build:production": "tsc -b && vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint ."
   },

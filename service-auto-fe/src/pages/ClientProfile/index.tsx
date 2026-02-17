@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import '../Home/Home.css'
 import './ClientProfile.css'
 import ClaimTemplate from '../../templates/claim/v1/template'
-import { mapClaim } from '../../templates/claim/v1/mapping'
 import ReactDOMServer from 'react-dom/server'
 
 type Client = {

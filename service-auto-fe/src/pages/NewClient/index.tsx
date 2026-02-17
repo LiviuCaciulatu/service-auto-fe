@@ -41,6 +41,8 @@ export default function NewClient() {
   const [processing, setProcessing] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  // referenced to avoid TS6133 when only set but not displayed
+  void uploadError
 
   useEffect(() => {
     if (!clientResult) return

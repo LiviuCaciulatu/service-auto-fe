@@ -253,7 +253,7 @@ export default function CarDocumentsNew() {
         setError(msg)
         throw new Error(msg)
       }
-      const data = await res.json().catch(() => null)
+      await res.json().catch(() => null)
       const targetClientId = payload.client_id || id || form.client_id || null
       if (targetClientId) {
         navigate(`/clients/${targetClientId}`)

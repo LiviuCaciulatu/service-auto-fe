@@ -47,6 +47,9 @@ export default function CompensationClaimNew() {
   const [sendResult, setSendResult] = useState<any | null>(null)
   const [downloading, setDownloading] = useState(false)
   const [createdId, setCreatedId] = useState<string | null>(null)
+  // Some state variables are intentionally only set (for debug) — reference them
+  void carDocs
+  void sendResult
 
   useEffect(() => {
     if (!id) return
@@ -192,6 +195,7 @@ export default function CompensationClaimNew() {
       if (claimRes.ok) {
         try { claimJson = await claimRes.json() } catch {}
       }
+      void claimJson
 
       // Try to GET a generated PDF endpoint first
       const res = await fetch(`/compensationClaims/${createdId}/pdf`)

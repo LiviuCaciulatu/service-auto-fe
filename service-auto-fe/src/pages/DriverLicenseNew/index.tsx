@@ -41,6 +41,9 @@ export default function DriverLicenseNew() {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [uploadResult, setUploadResult] = useState<any | null>(null)
   const [driverResult, setDriverResult] = useState<any | null>(null)
+  // these state values are only set for debugging/inspection — reference to avoid unused-var errors
+  void uploadResult
+  void driverResult
 
   const onChange = (k: keyof FormData, v: string) => {
     if (k === 'vehicle_codes') {
